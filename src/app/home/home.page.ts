@@ -1,6 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { GoogleMap } from '@capacitor/google-maps';
 import { environment } from 'src/environments/environment';
+import { Geolocation } from '@capacitor/geolocation';
 
 @Component({
   selector: 'app-home',
@@ -31,5 +32,13 @@ export class HomePage {
         zoom: 8,
       },
     });
+    this.buscarPosicao();
   }
+
+  async buscarPosicao(){
+    const coordinates = await Geolocation.getCurrentPosition();
+    console.log('Current position:', coordinates);
+    return coordinates;
+  }
+
 }
