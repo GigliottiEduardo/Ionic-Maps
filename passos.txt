@@ -1,13 +1,12 @@
-=========
 Dar Npm i
 npm install @capacitor/geolocation
 npx cap sync ou ionic cap sync
 
-==========================================
+-------------------------------------------------------------------
 adicionar no ion-content do home.page.html
 <capacitor-google-map #map></capacitor-google-map>
 
-===========================
+-------------------------------------------------------------------
 adicionar no home.page.scss
 capacitor-google-map {
   display: inline-block;
@@ -15,7 +14,7 @@ capacitor-google-map {
   height: 100%;
 }
 
-===============
+------------------------------------------------------------------
 No home.page.ts
 
 import { Component, ElementRef, ViewChild } from '@angular/core';
@@ -49,19 +48,20 @@ export class HomePage {
           lat: -22.489207,
           lng: -48.546470,
         },
-        zoom: 8,
+        zoom: 1,
       },
     });
     this.buscarPosicao();
   }
 
+  // vai buscar a posilçao de acordo com as coordenadas
   async buscarPosicao(){
     const coordinates = await Geolocation.getCurrentPosition();
     console.log('Current position:', coordinates);
     this.adicionarMarcador(coordinates);
     return coordinates;
   }
-
+  // vai adicionar um marcador em cima do mapa de acordo com as coordenadas
   async adicionarMarcador(coordinates: Position){
       // Add a marker to the map
   const markerId = await this.Map.addMarker({
@@ -71,6 +71,8 @@ export class HomePage {
   }
 
 });
+
+//vai dar zoom no mapa em cima das coordenadas
 this.zoomNoMarcador(coordinates);
   }
 
@@ -84,14 +86,39 @@ this.zoomNoMarcador(coordinates);
   }
 }
 
-===============
+---------------------------------------------------------------------
+Adicionar no app.module.ts
+import { NgModule, isDevMode } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { RouteReuseStrategy } from '@angular/router';
+
+import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
+
+import { AppComponent } from './app.component';
+import { AppRoutingModule } from './app-routing.module';
+import { ServiceWorkerModule } from '@angular/service-worker';
+
+@NgModule({
+  declarations: [AppComponent],
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, ServiceWorkerModule.register('ngsw-worker.js', {
+  enabled: !isDevMode(),
+  // Register the ServiceWorker as soon as the application is stable
+  // or after 30 seconds (whichever comes first).
+  registrationStrategy: 'registerWhenStable:30000'
+})],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+  bootstrap: [AppComponent],
+})
+export class AppModule {}
+
+---------------------------------------------------------------------
 No environment.ts
 export const environment = {
   production: false,
   mapsKey: 'AIzaSyD6v5fULYIQf3DgoRdHRxCahyUMBJSYyjc'
 };
 
-======================
+---------------------------------------------------------------------
 No environment.prod.ts
 export const environment = {
   production: true,
